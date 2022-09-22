@@ -1,0 +1,16 @@
+{
+  "name": "locationlogger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "function.js",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "fza",
+  "license": "ISC"
+}
