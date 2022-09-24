@@ -1,10 +1,12 @@
 const { Pool, Client } = require('pg')
 
+require('dotenv').config()
+
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'dev-location-logger',
-    password: 'jasonchiu8191',
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST_EXTERNAL,
+    database: process.env.DB_NAME,
+    password: process.env.DB_PASSWORD,
     port: 5432,
   })
 
@@ -33,7 +35,6 @@ let testInsertIntoDB = async () => {
 }
 
 let cleanUp = async () => {
-
     await pool.end()
 }
 
@@ -43,31 +44,18 @@ let insertLocationDataRowIntoDB = async (dataObject) => {
         `INSERT INTO location_data(timeToDestMinutes, startAddr, endAddr)
      VALUES (${dataObject.timeToDestMinutes}, '${dataObject.startAddr}', '${dataObject.endAddr}') RETURNING *;`)
 
-     console.log("Inserted", newRow.rows)
+    //  console.log("Inserted", newRow.rows)
 
 }
 
 let sampleReportFromDB = async () => {
 
     let result = await pool.query(`
-    SELECT * FROM location_data WHERE  
-    startAddr = '550 Forest Park Blvd, Oxnard, CA 93036, USA' AND
-    endAddr = 'Goleta, CA, USA'
+    SELECT * FROM location_data
     `);
 
-    console.log(result.rows);
-
-
+    return result.rows;
 }
-
-let testRun = async () => {
-
-// await initDB();
-await testInsertIntoDB();
-await sampleReportFromDB();
-}
-
-// testRun();
 
 
 module.exports = {initDB, testInsertIntoDB, insertLocationDataRowIntoDB, sampleReportFromDB, cleanUp};

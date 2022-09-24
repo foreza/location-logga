@@ -5,11 +5,14 @@
   "main": "function.js",
   "dependencies": {
     "axios": "^0.27.2",
+    "dotenv": "^16.0.2",
     "pg": "^8.8.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@google-cloud/functions-framework": "^3.1.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npx functions-framework --target=main --signature-type=http"
   },
   "author": "fza",
   "license": "ISC"
