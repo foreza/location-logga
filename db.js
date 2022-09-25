@@ -1,4 +1,4 @@
-const { Pool, Client } = require('pg')
+const { Pool} = require('pg')
 
 require('dotenv').config()
 
@@ -23,6 +23,7 @@ let initDB = async () => {
 
 }
 
+// TODO: For automated tests..
 let testInsertIntoDB = async () => {
 
     let addRowTest = await pool.query(
@@ -34,6 +35,8 @@ let testInsertIntoDB = async () => {
 
 }
 
+
+// TODO: When is the right place to terminate the connection pool?
 let cleanUp = async () => {
     await pool.end()
 }
@@ -50,8 +53,11 @@ let insertLocationDataRowIntoDB = async (dataObject) => {
 
 let sampleReportFromDB = async () => {
 
+    // TODO: make this cooler
     let result = await pool.query(`
     SELECT * FROM location_data
+    ORDER BY currdatetime desc 
+    LIMIT 10
     `);
 
     return result.rows;

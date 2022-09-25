@@ -14,7 +14,6 @@ let getCurrTimeDataObj = async (startLocString, endLocString) => {
   // Handle response
   if (res.status == 200) {
     retObj = extractDataFromObj(res.data);
-    console.log(retObj)
   }
 
   return retObj;
@@ -41,9 +40,27 @@ let extractDataFromObj = (responseData) => {
   return dataObj;
 }
 
-
+// Takes a startLoc and endLoc
 exports.main = async (req, res) => {
-  let obj = await getCurrTimeDataObj("Goleta", "Ventura");
+
+  // Parse out the req params
+
+  console.log("Params:", req.query);
+
+  // We want a startLoc and endLoc
+
+  // TODO: Make this a req middleware
+  if (typeof(req.query.startLoc) == "undefined" || 
+    typeof(req.query.endLoc) == "undefined") {
+      res.status(400).json({error: 'Missing startLoc and endLoc query params'});
+      return;
+    }
+
+  // TODO: More sanitization/error checking
+  let startLocation = req.query.startLoc;
+  let endLocation = req.query.endLoc;
+  
+  let obj = await getCurrTimeDataObj(startLocation, endLocation);
 
   await myDb.initDB();
   await myDb.insertLocationDataRowIntoDB(obj);
