@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const pool = new Pool({
     user: process.env.DB_USER,
-    host: process.env.DB_HOST_EXTERNAL,
+    host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: 5432,
@@ -46,8 +46,7 @@ let insertLocationDataRowIntoDB = async (dataObject) => {
     let newRow = await pool.query(
         `INSERT INTO location_data(timeToDestMinutes, startAddr, endAddr)
      VALUES (${dataObject.timeToDestMinutes}, '${dataObject.startAddr}', '${dataObject.endAddr}') RETURNING *;`)
-
-    //  console.log("Inserted", newRow.rows)
+    return newRow.rows;
 
 }
 
