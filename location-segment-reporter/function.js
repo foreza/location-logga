@@ -40,8 +40,17 @@ exports.main = async (req, res) => {
   let monthlyDataObj = await fetchSegmentDataForType(mapRetObj, 1, mapRetObj.startAddr, mapRetObj.endAddr);
 
   // Upload our files with the corresponding data
-  await uploadSegmentDataForType(dailyDataObj, 0, mapRetObj.startAddr, mapRetObj.endAddr);
-  await uploadSegmentDataForType(monthlyDataObj, 1, mapRetObj.startAddr, mapRetObj.endAddr);
+  let dailyFileURI = await uploadSegmentDataForType(dailyDataObj, 0, mapRetObj.startAddr, mapRetObj.endAddr);
+  let monthlyFileURI = await uploadSegmentDataForType(monthlyDataObj, 1, mapRetObj.startAddr, mapRetObj.endAddr);
+
+  // grab the URI
+  let retObj = {
+    "dailyFileURI": dailyFileURI,
+    "monthlyFileURI": monthlyFileURI
+  }
+
+  // Tell GCP everything will be ok in the end.
+  res.status(200).json(retObj)  ;
 }
 
 // Calls the bucket to upload a file with some provided data
@@ -55,10 +64,12 @@ let uploadSegmentDataForType = async (dbObj, type, startAddr, endAddr) => {
 
   // Upload the file
   try {
-    await myBucket.uploadFileToBucket(filename, JSON.stringify(dbObj));
+    var uploadedFileURI = await myBucket.uploadFileToBucket(filename, JSON.stringify(dbObj));
   } catch (e) {
     console.error("Failed to upload file with error: ", e);
   }
+
+  return uploadedFileURI;
 }
 
 // Accepts the map object, the type (0 = daily, 1 = monthly) and the start/end addr for the lookup and filename
