@@ -1,5 +1,17 @@
 # Dev stuff
 
+## Bucket needs CORS?
+
+They didn't tell me that applying a CORS policy takes time.
+I cried
+
+```
+gsutil cors set cors-config.json gs://location-logger-bucket
+# check our work
+gsutil cors get gs://location-logger-bucket
+```
+
+
 ## Doing stuff locally and need to login?
 
 https://cloud.google.com/docs/authentication/provide-credentials-adc

@@ -12,52 +12,229 @@
   <main>
     <div class="container">
       <h1>Oxnard to UC</h1>
-      <div class="section">
 
-        <p>I made this just to play around a bit with cloud computing.</p>
-        <p>Also, I just moved and I thought, instead of checking google maps all the time, I'd just automate that</p>
-        <p>This project costs me about $20 USD a month to maintain.</p>
-        <p>Repo and source code available here: <a href="https://github.com/foreza/location-logga">link</a></p>
+      <div class="section">
+        <h2>Data Insights</h2>
+        <ul>
+          <li><span>Trip Peak Time: </span><span id="trip-peak-time-val"></span></li>
+          <li><span>Average trip time: </span><span id="trip-avg-time-val"></span></li>
+          <li><span>Suggested best times to leave in AM: </span><span id="best-times-to-leave-am"></span></li>
+          <li><span>Suggested best times to leave in PM: </span><span id="best-times-to-leave-pm"></span></li>
+          <li><span>Avoid traveling at: </span><span id="worst-times-to-leave"></span></li>
+
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Trip Data for this Month</h2>
+        <canvas id="monthlyDataChart" style="width:100%;max-width:1000px"></canvas>
       </div>
       <div class="divider"></div>
 
-      <div class="section">
-        <h2>Tech used:</h2>
-        <ul>
-          <li>Frontend: HTML/CSS/JS, with Materialize (for prettying the view), Chart.js (for basic dashboards)</li>
-          <li>PostGres (hosted on GCP) for persisting segment data to DB (yes, it's overkill and was the main cost)</li>
-          <li>Google's Distance Matrix API for getting real time location</li>
-          <li>Google's Cloud Functions for invoking the distance API, and inserting/retrieving data from PostGres</li>
-          <li>Google's Cloud Scheduler for scheduling cloud functions for execution</li>
-          <li>Google's Pub/Sub for help/convenience in turning on/off the DB to save on cost</li>
-        </ul>
-      </div>
+      <!-- <div class="section">
+        <h2>Trip Data for this Month</h2>
+        <canvas id="monthlyDataChart" style="width:100%;max-width:1000px"></canvas>
+      </div> -->
+      <!-- <div class="divider"></div> -->
 
-      <div class="divider"></div>
-      <div class="section">
-        <h2>Current available segment dashboards:</h2>
-        <ul>
-          <li><a href="/dashboards/oxnard-ucsb.html">oxnard-ucsb</a></li>
-          <li><a href="/dashboards/oxnard-ktown.html">oxnard-ktown</a></li>
-          <li><a href="/dashboards/oxnard-sawtelle.html">oxnard-sawtelle</a></li>
-        </ul>
-
-      </div>
-
-
-      <div class="section">
-        <h2>What did I learn? What would I improve?</h2>
-        <ul>
-          <li>Section in progress.</li>
-          <li>Pain point - my DB was always turned off. It was super cheap. it took forever to turn on. I'd probably trade up for a more expensive DB if I could ensure turning on/off was under a minute. Sometimes, it would take up to 10-20 minutes to turn on / off.</li>
-          <li>And so on... </li>
-        </ul>
-      </div>
 
 
     </div>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+  <script>
+
+    // fetch the data for monthly
+
+    async function getDataFromBucket() {
+      let uri = "https://storage.googleapis.com/location-logger-bucket/month-9_3_2022-550forestparkblvdoxnardca93036usa-6510elcolegiordgoletaca93117usa.json";
+      const response = await fetch(uri);
+      const data = await response.json();
+      console.log("monthlyData", data);
+      return data;
+    }
+
+    // TEMP
+    // monthlyData = [
+    //   {
+    //     "timetodestminutes": 48,
+    //     "hour": "13"
+    //   },
+    //   {
+    //     "timetodestminutes": 55,
+    //     "hour": "14"
+    //   },
+    //   {
+    //     "timetodestminutes": 54,
+    //     "hour": "15"
+    //   },
+    //   {
+    //     "timetodestminutes": 47,
+    //     "hour": "16"
+    //   },
+    //   {
+    //     "timetodestminutes": 47,
+    //     "hour": "17"
+    //   },
+    //   {
+    //     "timetodestminutes": 47,
+    //     "hour": "18"
+    //   },
+    //   {
+    //     "timetodestminutes": 48,
+    //     "hour": "19"
+    //   },
+    //   {
+    //     "timetodestminutes": 48,
+    //     "hour": "20"
+    //   },
+    //   {
+    //     "timetodestminutes": 47,
+    //     "hour": "21"
+    //   },
+    //   {
+    //     "timetodestminutes": 48,
+    //     "hour": "22"
+    //   },
+    //   {
+    //     "timetodestminutes": 47,
+    //     "hour": "23"
+    //   },
+    //   {
+    //     "timetodestminutes": 47,
+    //     "hour": "0"
+    //   },
+    //   {
+    //     "timetodestminutes": 46,
+    //     "hour": "1"
+    //   },
+    //   {
+    //     "timetodestminutes": 46,
+    //     "hour": "2"
+    //   },
+    //   {
+    //     "timetodestminutes": 45,
+    //     "hour": "3"
+    //   }
+    // ]
+
+
+    function getInsights(data) {
+
+
+      let insightsObj = {
+        'trip-peak-time-val' : 1,
+        "trip-avg-time-val": 1,
+        "best-times-to-leave-am": [1,2,3],
+        "best-times-to-leave-pm":[1,2,3],
+        "worst-times-to-leave":[4,5,6]
+      }
+
+      // Trip peak time is the max of the set, sort the set by highest
+
+
+      // Make a copy and modify this set to be UTC data
+      let insightsData = data.map(({ hour, timetodestminutes }) =>
+        ({ hour: adjustTimeForUTC(parseInt(hour)), timetodestminutes: timetodestminutes }))
+
+      insightsData.sort((a, b) => b.timetodestminutes - a.timetodestminutes);
+      var peakEntry = insightsData[0];
+      console.log("Highest Trip Time observed: ", peakEntry);
+      
+
+      var worstTripTimes = [insightsData[0].hour, insightsData[1].hour, insightsData[2].hour]
+
+      console.log("Avoid these times: ", worstTripTimes)
+
+      // // Best trip times:
+
+      let morningData = insightsData.filter((a) => a.hour < 12)
+      morningData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);
+
+      var bestTripTimesAM = [morningData[0].hour, morningData[1].hour, morningData[2].hour];
+      console.log("bestTripTimesInTheMorning: ", bestTripTimesAM);
+
+      let afternoonData = insightsData.filter((a) => a.hour >= 12)
+      afternoonData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);
+
+      var bestTripTimesPM = [afternoonData[0].hour, afternoonData[1].hour, afternoonData[2].hour];
+      console.log("bestTripTimesInTheAfternoon: ", bestTripTimesPM);
+
+
+    }
+
+    function updateViewWithInsights(object) {
+
+      var obj = {
+        'trip-peak-time-val' : 1,
+        "trip-avg-time-val": 1,
+        "best-times-to-leave-am": [1,2,3],
+        "best-times-to-leave-pm":[1,2,3],
+        "worst-times-to-leave":[4,5,6]
+      }
+
+
+    }
+
+
+
+
+    function drawChart(data) {
+
+      var chartDataArr = data.map(function (entry) {
+        var tObj = {}
+        tObj.x = adjustTimeForUTC(parseInt(entry.hour));
+        tObj.y = parseInt(entry.timetodestminutes);
+        return tObj;
+      })
+
+      new Chart("monthlyDataChart", {
+        type: "scatter",
+        data: {
+          datasets: [{
+            pointRadius: 4,
+            pointBackgroundColor: "rgb(0,0,255)",
+            data: chartDataArr
+          }]
+        },
+        options: {
+          legend: { display: false },
+          scales: {
+            xAxes: [{ ticks: { min: 1, max: 24 } }],
+            yAxes: [{ ticks: { min: 20, max: 90 } }],
+          },
+          title: {
+            display: true,
+            text: "Oxnard -> UCSB (Full month)"
+          }
+        }
+      });
+
+    }
+
+    // Utility function to help
+    function adjustTimeForUTC(originalUTCHr) {
+      var utcDiff = -8;
+      var tVal = originalUTCHr + utcDiff;
+      return tVal < 0 ? tVal + 24 : tVal;
+    }
+
+
+
+
+    window.addEventListener('DOMContentLoaded', async (event) => {
+      console.log('DOM fully loaded and parsed');
+
+      let data = await getDataFromBucket();
+      drawChart(data);
+      getInsights(data);
+    });
+
+
+
+  </script>
+
 </body>
 
 <footer class="page-footer purple darken-4">
