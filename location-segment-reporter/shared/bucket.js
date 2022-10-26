@@ -24,7 +24,12 @@ let uploadFileToBucket = async (fileName, reportContent) => {
     );
   }
 
-  uploadFromMemory().catch(console.error);
+  await uploadFromMemory().catch(console.error);
+
+  // Return the file name of the uploaded resource
+  let resourceURI = `https://storage.googleapis.com/location-logger-bucket/${destFileName}`;
+  console.log(resourceURI)
+  return resourceURI;
 }
 
 module.exports = {uploadFileToBucket};
