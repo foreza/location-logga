@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Location Logga - Index</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+  <main>
+    <div class="container">
+      <h1>Welcome to Location Logga</h1>
+      <div class="section">
+
+        <p>I made this just to play around a bit with cloud computing.</p>
+        <p>Also, I just moved and I thought, instead of checking google maps all the time, I'd just automate that</p>
+        <p>This project costs me about $20 USD a month to maintain.</p>
+        <p>Repo and source code available here: <a href="https://github.com/foreza/location-logga">link</a></p>
+      </div>
+      <div class="divider"></div>
+
+      <div class="section">
+        <h2>Tech used:</h2>
+        <ul>
+          <li>Frontend: HTML/CSS/JS, with Materialize (for prettying the view), Chart.js (for basic dashboards)</li>
+          <li>PostGres (hosted on GCP) for persisting segment data to DB (yes, it's overkill and was the main cost)</li>
+          <li>Google's Distance Matrix API for getting real time location</li>
+          <li>Google's Cloud Functions for invoking the distance API, and inserting/retrieving data from PostGres</li>
+          <li>Google's Cloud Scheduler for scheduling cloud functions for execution</li>
+          <li>Google's Pub/Sub for help/convenience in turning on/off the DB to save on cost</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+      <div class="section">
+        <h2>Current available segment dashboards:</h2>
+        <ul>
+          <li><a href="/dashboards/oxnard-ucsb.html">oxnard-ucsb</a></li>
+          <li><a href="/dashboards/oxnard-ktown.html">oxnard-ktown</a></li>
+          <li><a href="/dashboards/oxnard-sawtelle.html">oxnard-sawtelle</a></li>
+        </ul>
+
+      </div>
+
+
+      <div class="section">
+        <h2>What did I learn? What would I improve?</h2>
+        <ul>
+          <li>Section in progress.</li>
+          <li>Pain point - my DB was always turned off. It was super cheap. it took forever to turn on. I'd probably trade up for a more expensive DB if I could ensure turning on/off was under a minute. Sometimes, it would take up to 10-20 minutes to turn on / off.</li>
+          <li>And so on... </li>
+        </ul>
+      </div>
+
+
+    </div>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+<footer class="page-footer purple darken-4">
+  <div class="container">
+    <div class="row">
+      <div class="col l6 s12">
+        <h5 class="white-text">Thanks for hanging</h5>
+        <p class="grey-text text-lighten-4">Did I really spend this much time on my footer?</p>
+      </div>
+      <div class="col l4 offset-l2 s12">
+        <h5 class="white-text">Links</h5>
+        <ul>
+          <li><a class="grey-text text-lighten-3" href="https://jasonthechiu.com">site</a></li>
+          <li><a class="grey-text text-lighten-3" href="https://medium.com/@foreza">blog</a></li>
+          <li><a class="grey-text text-lighten-3" href="https://www.linkedin.com/in/jasonthechiu/">linkedin</a></li>
+          <li><a class="grey-text text-lighten-3" href="https://www.buymeacoffee.com/foreza">coffee pls</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-copyright">
+    <div class="container">
+      © 2022 Foreza
+    </div>
+  </div>
+</footer>
+
+</html>
