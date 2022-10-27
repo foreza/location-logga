@@ -1,5 +1,9 @@
 # Dev stuff
 
+## What are folders in buckets?
+
+Yeah, just add them to the filename in the path. YW
+
 ## Bucket needs CORS?
 
 They didn't tell me that applying a CORS policy takes time.

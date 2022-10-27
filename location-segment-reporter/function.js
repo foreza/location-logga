@@ -63,20 +63,19 @@ exports.main = async (req, res) => {
 // Calls the bucket to upload a file with some provided data
 let uploadSegmentDataForType = async (dbObj, type, startAddr, endAddr) => {
 
-  let fileStartAddrName = sanitizeLocationName(startAddr);
-  let fileEndAddrName = sanitizeLocationName(endAddr);
-
+  let foldername = `${sanitizeLocationName(startAddr)}-${sanitizeLocationName(endAddr)}`
   let filename;
-  
+  let tDate = new Date();
+ 
   switch (type) {
     case 0: 
-      filename = generateFileNameDaily(fileStartAddrName, fileEndAddrName);
+      filename = `daily-${tDate.getMonth()+1}_${tDate.getDate()}_${tDate.getFullYear()}.json`
       break;
     case 1:
-      filename = generateFileNameMonthly(fileStartAddrName, fileEndAddrName);
+      filename = `monthly-${tDate.getMonth()+1}_${tDate.getFullYear()}.json`
       break;
     case 2:
-      filename = generateFileNameLast30Days(fileStartAddrName, fileEndAddrName); 
+      filename = `30day-lookback-${tDate.getMonth()+1}_${tDate.getFullYear()}.json`
       break;
     default:
       filename = "whatareyoudoing";
@@ -86,7 +85,7 @@ let uploadSegmentDataForType = async (dbObj, type, startAddr, endAddr) => {
 
   // Upload the file
   try {
-    var uploadedFileURI = await myBucket.uploadFileToBucket(filename, JSON.stringify(dbObj));
+    var uploadedFileURI = await myBucket.uploadFileToBucket(foldername, filename, JSON.stringify(dbObj));
   } catch (e) {
     console.error("Failed to upload file with error: ", e);
   }
@@ -128,25 +127,6 @@ let fetchSegmentDataForType = async (mapObj, type, startAddr, endAddr) => {
 
 
 
-let generateFileNameMonthly = (start,end) => {
-  let tDate = new Date();
-  let fileName = `monthly-${tDate.getMonth()+1}_${tDate.getFullYear()}-${start}-${end}.json`
-  return fileName;
-}
-
-
-let generateFileNameDaily = (start,end) => {
-  let tDate = new Date();
-  let fileName = `daily-${tDate.getMonth()+1}_${tDate.getDate()}_${tDate.getFullYear()}-${start}-${end}.json`
-  return fileName;
-}
-
-
-let generateFileNameLast30Days = (start,end) => {
-  let tDate = new Date();
-  let fileName = `30day-lookback-${tDate.getMonth()+1}_${tDate.getFullYear()}-${start}-${end}.json`
-  return fileName;
-}
 
 
 // make the location name itself safe
