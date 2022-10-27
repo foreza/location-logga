@@ -56,35 +56,49 @@ let getTodayDataForSegment = async (startLoc, endLoc) => {
     startaddr='${startLoc}' AND
     extract(day from currdatetime)=extract (day from CURRENT_DATE)
     `
-    console.log(rawQuery);
-
+    // console.log(rawQuery);
     let result = await pool.query(rawQuery);
-
     return result.rows;
 
 }
 
 
 // For now, query for all the data we have thus far and overwrite
-// TODO: Figure out how to append data? S3/blob store objects don't really support this though
 let getMonthDataForSegment = async (startLoc, endLoc) => {
   let rawQuery = `
   SELECT 
   timetodestminutes, 
-  extract(hour from currdatetime) as hour 
+  extract(hour from currdatetime) as hour,
+  extract(day from currdatetime) as day 
   FROM location_data 
   WHERE 
   endaddr='${endLoc}' AND 
   startaddr='${startLoc}' AND
   extract(month from currdatetime)=extract (month from CURRENT_DATE)
   `
-  console.log(rawQuery);
-
+  // console.log(rawQuery);
   let result = await pool.query(rawQuery);
+  return result.rows;
+}
 
+
+let get30DayLookBackForSegment = async (startLoc, endLoc) => {
+  let rawQuery = `
+  SELECT 
+  timetodestminutes, 
+  extract(hour from currdatetime) as hour,
+  extract(day from currdatetime) as day
+  FROM location_data 
+  WHERE 
+  endaddr='${endLoc}' AND 
+  startaddr='${startLoc}' AND
+  currdatetime > (CURRENT_DATE - INTERVAL '30 days');
+  `
+  // console.log(rawQuery);
+  let result = await pool.query(rawQuery);
   return result.rows;
 }
 
 
 
-module.exports = {initDB, insertLocationDataRowIntoDB, getTodayDataForSegment, getMonthDataForSegment, cleanUp};
+module.exports = {initDB, insertLocationDataRowIntoDB, getTodayDataForSegment, getMonthDataForSegment, get30DayLookBackForSegment, cleanUp};

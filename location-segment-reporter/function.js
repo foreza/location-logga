@@ -4,11 +4,6 @@ const myBucket = require('./shared/bucket')
 
 require('dotenv').config()
 
-// exports.main = async (req, res) => {
-//   await myBucket.testBucketUpload();
-//   res.json({});
-// }
-
 // Reporting endpoint - we can re-use the same function?
 // TODO: remove code duplication & look into middleware
 exports.main = async (req, res) => {
@@ -36,21 +31,33 @@ exports.main = async (req, res) => {
   // Handle daily report data fetch
   // Get both daily/monthly reports
   // The map API gives us the key to look up in the DB
+
+  /*
+    0 = daily
+    1 = monthly
+    2 = 30 day lookback
+  */
+
   let dailyDataObj = await fetchSegmentDataForType(mapRetObj, 0, mapRetObj.startAddr, mapRetObj.endAddr);
   let monthlyDataObj = await fetchSegmentDataForType(mapRetObj, 1, mapRetObj.startAddr, mapRetObj.endAddr);
+  let lookBackDataObj = await fetchSegmentDataForType(mapRetObj, 2, mapRetObj.startAddr, mapRetObj.endAddr);
+
 
   // Upload our files with the corresponding data
   let dailyFileURI = await uploadSegmentDataForType(dailyDataObj, 0, mapRetObj.startAddr, mapRetObj.endAddr);
   let monthlyFileURI = await uploadSegmentDataForType(monthlyDataObj, 1, mapRetObj.startAddr, mapRetObj.endAddr);
+  let lookBackFileURI = await uploadSegmentDataForType(lookBackDataObj, 2, mapRetObj.startAddr, mapRetObj.endAddr);
+
 
   // grab the URI
   let retObj = {
     "dailyFileURI": dailyFileURI,
-    "monthlyFileURI": monthlyFileURI
+    "monthlyFileURI": monthlyFileURI,
+    "lookBackFileURI": lookBackFileURI
   }
 
   // Tell GCP everything will be ok in the end.
-  res.status(200).json(retObj)  ;
+  res.status(200).json(retObj);
 }
 
 // Calls the bucket to upload a file with some provided data
@@ -59,7 +66,22 @@ let uploadSegmentDataForType = async (dbObj, type, startAddr, endAddr) => {
   let fileStartAddrName = sanitizeLocationName(startAddr);
   let fileEndAddrName = sanitizeLocationName(endAddr);
 
-  let filename = generateFileName(fileStartAddrName, fileEndAddrName, type ? "month" : "daily");    
+  let filename;
+  
+  switch (type) {
+    case 0: 
+      filename = generateFileNameDaily(fileStartAddrName, fileEndAddrName);
+      break;
+    case 1:
+      filename = generateFileNameMonthly(fileStartAddrName, fileEndAddrName);
+      break;
+    case 2:
+      filename = generateFileNameLast30Days(fileStartAddrName, fileEndAddrName); 
+      break;
+    default:
+      filename = "whatareyoudoing";
+  }
+  
   console.log(filename, JSON.stringify(dbObj));
 
   // Upload the file
@@ -81,8 +103,20 @@ let fetchSegmentDataForType = async (mapObj, type, startAddr, endAddr) => {
   // Get data from DB for daily data
   try {
     if (typeof (mapObj) != "undefined") {
-      // 0: today; 1: month
-      dbResultObj = await type ? myDb.getMonthDataForSegment(startAddr, endAddr) : myDb.getTodayDataForSegment(startAddr, endAddr);
+      // 0: today; 1: month 2: lookback
+      switch (type) {
+        case 0: 
+        dbResultObj = await myDb.getTodayDataForSegment(startAddr, endAddr);
+        break;
+      case 1:
+        dbResultObj = await myDb.getMonthDataForSegment(startAddr, endAddr);
+        break;
+      case 2:
+        dbResultObj = await myDb.get30DayLookBackForSegment(startAddr, endAddr);
+        break;
+      default:
+        // :(
+      }
     } else {
       console.log("object undefined; no dbResultObj")
   }} catch (e) {
@@ -94,10 +128,23 @@ let fetchSegmentDataForType = async (mapObj, type, startAddr, endAddr) => {
 
 
 
-
-let generateFileName = (start,end, cadencePrefix) => {
+let generateFileNameMonthly = (start,end) => {
   let tDate = new Date();
-  let fileName = `${cadencePrefix}-${tDate.getMonth()}_${tDate.getDay()}_${tDate.getFullYear()}-${start}-${end}.json`
+  let fileName = `monthly-${tDate.getMonth()+1}_${tDate.getFullYear()}-${start}-${end}.json`
+  return fileName;
+}
+
+
+let generateFileNameDaily = (start,end) => {
+  let tDate = new Date();
+  let fileName = `daily-${tDate.getMonth()+1}_${tDate.getDate()}_${tDate.getFullYear()}-${start}-${end}.json`
+  return fileName;
+}
+
+
+let generateFileNameLast30Days = (start,end) => {
+  let tDate = new Date();
+  let fileName = `30day-lookback-${tDate.getMonth()+1}_${tDate.getFullYear()}-${start}-${end}.json`
   return fileName;
 }
 
