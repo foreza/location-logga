@@ -33,7 +33,7 @@ function updateViewWithInsights(object) {
 }
 
 
-function drawChart(rawData, averagedData, graphID) {
+function drawChart(rawData, averagedData, graphID, title) {
 
 
   // Scatter plot data for the raw untouched data
@@ -75,7 +75,7 @@ function drawChart(rawData, averagedData, graphID) {
       },
       title: {
         display: true,
-        text: "Oxnard -> UCSB (Full month)"
+        text: title
       }
     }
   });

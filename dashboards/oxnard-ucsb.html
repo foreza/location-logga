@@ -96,16 +96,16 @@
       graphObj_OxnToGol.dataRaw = await async_getDataFromBucket(graphObj_OxnToGol.dataURI.lookBack);
       graphObj_OxnToGol.dataAvg = getAveragedSetFromData(graphObj_OxnToGol.dataRaw);
       createCanvasObject(document, "monthlyLookBack_OxnToGol", "lookBack_OxnToGol");
-      drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_OxnToGol");
+      drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_OxnToGol", "Oxnard -> Goleta Scatter");
       getInsights(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg);
 
 
       // Draw Goleta -> Oxn
-      graphObj_OxnToGol.dataRaw = await async_getDataFromBucket(graphObj_OxnToGol.dataURI.lookBack);
-      graphObj_OxnToGol.dataAvg = getAveragedSetFromData(graphObj_OxnToGol.dataRaw);
+      graphObj_GolToOxn.dataRaw = await async_getDataFromBucket(graphObj_GolToOxn.dataURI.lookBack);
+      graphObj_GolToOxn.dataAvg = getAveragedSetFromData(graphObj_GolToOxn.dataRaw);
       createCanvasObject(document, "monthlyLookBack_GoltoOxn", "lookBack_GolToOxn");
-      drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_GolToOxn");
-      getInsights(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg);
+      drawChart(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg, "lookBack_GolToOxn",  "Goleta -> Oxnard Scatter");
+      getInsights(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg);
     });
   </script>
 

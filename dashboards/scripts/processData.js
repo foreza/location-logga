@@ -32,45 +32,63 @@
   }
 
 
-  function getInsights(rawData, averagedData) {
+  // For rendering
+  const insightsFriendlyMap = {
+    "trip-peak-time-val": "Peak overall trip time:",
+    "trip-avg-time-val": "Average overall trip time" ,
+    "best-times-to-leave-am": "Best times to leave in the morning",
+    "best-times-to-leave-pm": "Best times to leave in the evening",
+    "worst-times-to-leave": "Worst time to leave, all"
+  }
+
+  let getInsights = (rawData, averagedData) => {
 
     let insightsObj = {
-      'trip-peak-time-val' : 1,
-      "trip-avg-time-val": 1,
-      "best-times-to-leave-am": [1,2,3],
-      "best-times-to-leave-pm":[1,2,3],
-      "worst-times-to-leave":[4,5,6]
+      "trip-peak-time-val" : undefined,           // Uses the rawData
+      "trip-avg-time-val": undefined,             // Uses the rawData
+      "best-times-to-leave-am": undefined,        // Uses the averagedData
+      "best-times-to-leave-pm": undefined,        // Uses the averagedData
+      "worst-times-to-leave":undefined            // Uses the averagedData
     }
-  
-    // Trip peak time is the max of the set, sort the set by highest
-  
-  
-    // Make a copy and modify this set to be UTC data
+    
+    // Use the rawData to get overall peak and average times
     let insightsData = rawData.map(({ hour, timetodestminutes }) =>
       ({ hour: adjustTimeForUTC(parseInt(hour)), timetodestminutes: timetodestminutes }))
   
+    // Calculate peak time
     insightsData.sort((a, b) => b.timetodestminutes - a.timetodestminutes);
-    var peakEntry = insightsData[0];
-    console.log("Highest Trip Time observed: ", peakEntry);
+    insightsObj["trip-peak-time-val"] = insightsData[0].timetodestminutes;
+
+    // Calculate average time
+    let tSum = insightsData.reduce((a,b) => a + b.timetodestminutes, 0);
+    insightsObj["trip-avg-time-val"] = Math.round(tSum / Object.keys(insightsData).length);
+
+    // Use the averagedData to get the best/worst times to leave
+    let insightsAvgData = averagedData.map(({ hour, timetodestminutes }) =>
+    ({ hour: adjustTimeForUTC(parseInt(hour)), timetodestminutes: timetodestminutes }))
+
+    // Calculate worst times to leave
+    insightsAvgData.sort((a, b) => b.timetodestminutes - a.timetodestminutes);
+    insightsObj["worst-times-to-leave"] =  [insightsAvgData[0].hour, insightsAvgData[1].hour, insightsAvgData[2].hour]
     
-  
-    var worstTripTimes = [insightsData[0].hour, insightsData[1].hour, insightsData[2].hour]
-  
-    console.log("Avoid these times: ", worstTripTimes)
-  
-    // // Best trip times:
-  
-    let morningData = insightsData.filter((a) => a.hour < 12)
+    // Calculate best times to leave, AM
+    let morningData = insightsAvgData.filter((a) => a.hour < 12 && a.hour >= 6)
     morningData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);
+    insightsObj["best-times-to-leave-am"] = [morningData[0].hour, morningData[1].hour, morningData[2].hour];
   
-    var bestTripTimesAM = [morningData[0].hour, morningData[1].hour, morningData[2].hour];
-    console.log("bestTripTimesInTheMorning: ", bestTripTimesAM);
-  
-    let afternoonData = insightsData.filter((a) => a.hour >= 12)
-    afternoonData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);
-  
-    var bestTripTimesPM = [afternoonData[0].hour, afternoonData[1].hour, afternoonData[2].hour];
-    console.log("bestTripTimesInTheAfternoon: ", bestTripTimesPM);
-  
+    let afternoonData = insightsAvgData.filter((a) => a.hour >= 12 && a.hour <= 18)
+    afternoonData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);  
+    insightsObj["best-times-to-leave-pm"] = [afternoonData[0].hour, afternoonData[1].hour, afternoonData[2].hour];
+
+    console.log(insightsObj);
+
+    return insightsObj;
   }
-  
+
+
+  // This assumes we're passing an array like above
+  // let injectInsightsArrIntoParent(parentNode, insightsArr) {
+
+
+
+  // }
