@@ -13,23 +13,18 @@
 
     <div class="container">
       <h1>Oxnard to UCSB</h1>
-
       <div class="section">
         <h2>Data Insights for last 30 days</h2>
-        <ul>
-          <li><span>Trip Peak Time: </span><span id="trip-peak-time-val"></span></li>
-          <li><span>Average trip time: </span><span id="trip-avg-time-val"></span></li>
-          <li><span>Suggested best times to leave in AM: </span><span id="best-times-to-leave-am"></span></li>
-          <li><span>Suggested best times to leave in PM: </span><span id="best-times-to-leave-pm"></span></li>
-          <li><span>Avoid traveling at: </span><span id="worst-times-to-leave"></span></li>
-
-        </ul>
+        <div id="oxn-gol-insight">
+        </div>
       </div>
       <div class="divider"></div>
-
-      <div id="monthlyLookBack_OxnToGol" class="section">
+      <div class="section">
         <h2>Trip Data for last 30 Days (scatter)</h2>
+        <div id="monthlyLookBack_OxnToGol" class="section">
+        </div>
       </div>
+
     </div>
 
     <div class="container">
@@ -37,23 +32,19 @@
 
       <div class="section">
         <h2>Data Insights for last 30 days</h2>
-        <ul>
-          <li><span>Trip Peak Time: </span><span id="trip-peak-time-val"></span></li>
-          <li><span>Average trip time: </span><span id="trip-avg-time-val"></span></li>
-          <li><span>Suggested best times to leave in AM: </span><span id="best-times-to-leave-am"></span></li>
-          <li><span>Suggested best times to leave in PM: </span><span id="best-times-to-leave-pm"></span></li>
-          <li><span>Avoid traveling at: </span><span id="worst-times-to-leave"></span></li>
-        </ul>
+        <div id="gol-oxn-insight">
+        </div>
       </div>
 
+      <div class="divider"></div>
+      <div class="section">
+        <h2>Trip Data for last 30 Days (scatter)</h2>
+        <div id="monthlyLookBack_GoltoOxn" class="section">
+        </div>
+      </div>
 
-    <div id="monthlyLookBack_GoltoOxn" class="section">
-      <h2>Trip Data for last 30 Days (scatter)</h2>
-    </div>
     
-    <div class="divider"></div>
     </div>
-
 
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -97,7 +88,9 @@
       graphObj_OxnToGol.dataAvg = getAveragedSetFromData(graphObj_OxnToGol.dataRaw);
       createCanvasObject(document, "monthlyLookBack_OxnToGol", "lookBack_OxnToGol");
       drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_OxnToGol", "Oxnard -> Goleta Scatter");
-      getInsights(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg);
+      let oxn_gol_insightObj = getInsights(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg);
+      let oxn_gol_insight_ref = document.getElementById("oxn-gol-insight");
+      renderInsightsToDOMRef(oxn_gol_insight_ref, oxn_gol_insightObj)
 
 
       // Draw Goleta -> Oxn
@@ -105,7 +98,9 @@
       graphObj_GolToOxn.dataAvg = getAveragedSetFromData(graphObj_GolToOxn.dataRaw);
       createCanvasObject(document, "monthlyLookBack_GoltoOxn", "lookBack_GolToOxn");
       drawChart(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg, "lookBack_GolToOxn",  "Goleta -> Oxnard Scatter");
-      getInsights(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg);
+      let gol_oxn_insightObj = getInsights(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg);
+      let gol_oxn_insight_ref = document.getElementById("gol-oxn-insight");
+      renderInsightsToDOMRef(gol_oxn_insight_ref, gol_oxn_insightObj);
     });
   </script>
 
