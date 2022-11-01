@@ -10,6 +10,7 @@
 
 <body>
   <main>
+
     <div class="container">
       <h1>Oxnard to UCSB</h1>
 
@@ -24,16 +25,36 @@
 
         </ul>
       </div>
+      <div class="divider"></div>
 
       <div id="monthlyLookBack_OxnToGol" class="section">
         <h2>Trip Data for last 30 Days (scatter)</h2>
-        <!-- <canvas id="monthlyDataChart" style="width:100%;max-width:1000px"></canvas> -->
       </div>
-      <div class="divider"></div>
-
-
-
     </div>
+
+    <div class="container">
+      <h1>UCSB to Oxnard</h1>
+
+      <div class="section">
+        <h2>Data Insights for last 30 days</h2>
+        <ul>
+          <li><span>Trip Peak Time: </span><span id="trip-peak-time-val"></span></li>
+          <li><span>Average trip time: </span><span id="trip-avg-time-val"></span></li>
+          <li><span>Suggested best times to leave in AM: </span><span id="best-times-to-leave-am"></span></li>
+          <li><span>Suggested best times to leave in PM: </span><span id="best-times-to-leave-pm"></span></li>
+          <li><span>Avoid traveling at: </span><span id="worst-times-to-leave"></span></li>
+        </ul>
+      </div>
+
+
+    <div id="monthlyLookBack_GoltoOxn" class="section">
+      <h2>Trip Data for last 30 Days (scatter)</h2>
+    </div>
+    
+    <div class="divider"></div>
+    </div>
+
+
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
@@ -56,16 +77,34 @@
       }
     }
 
+    let graphObj_GolToOxn = {
+      dataRaw: undefined, 
+      dataAvg: undefined,
+      insightsArr: undefined,
+      dataURI: {
+        lookBack: "https://storage.googleapis.com/location-logger-bucket/6510elcolegiordgoletaca93117usa-550forestparkblvdoxnardca93036usa/30day-lookback-10_2022.json"
+      }
+    }
+
+
     // TODO: plug in
 
     window.addEventListener('DOMContentLoaded', async (event) => {
       console.log('DOM fully loaded and parsed');
 
+      // Draw Oxn -> Goleta
       graphObj_OxnToGol.dataRaw = await async_getDataFromBucket(graphObj_OxnToGol.dataURI.lookBack);
       graphObj_OxnToGol.dataAvg = getAveragedSetFromData(graphObj_OxnToGol.dataRaw);
-
       createCanvasObject(document, "monthlyLookBack_OxnToGol", "lookBack_OxnToGol");
       drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_OxnToGol");
+      getInsights(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg);
+
+
+      // Draw Goleta -> Oxn
+      graphObj_OxnToGol.dataRaw = await async_getDataFromBucket(graphObj_OxnToGol.dataURI.lookBack);
+      graphObj_OxnToGol.dataAvg = getAveragedSetFromData(graphObj_OxnToGol.dataRaw);
+      createCanvasObject(document, "monthlyLookBack_GoltoOxn", "lookBack_GolToOxn");
+      drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_GolToOxn");
       getInsights(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg);
     });
   </script>
