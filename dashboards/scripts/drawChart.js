@@ -13,28 +13,13 @@ function createCanvasObject(docRef, parentRefName, graphID) {
 
   let c = docRef.createElement("canvas");
   c.id = graphID;
-  let pRef = document.getElementById(parentRefName);
+  let pRef = docRef.getElementById(parentRefName);
   pRef.appendChild(c);
   return c;
 }
 
 
-function updateViewWithInsights(object) {
-
-  var obj = {
-    'trip-peak-time-val' : 1,
-    "trip-avg-time-val": 1,
-    "best-times-to-leave-am": [1,2,3],
-    "best-times-to-leave-pm":[1,2,3],
-    "worst-times-to-leave":[4,5,6]
-  }
-
-
-}
-
-
-function drawChart(rawData, averagedData, graphID, title) {
-
+function drawChart(rawData, averagedData, graphID, title, minTime=20, maxTime=90) {
 
   // Scatter plot data for the raw untouched data
   var chartDataArrRaw = rawData.map(function (entry) {
@@ -71,7 +56,7 @@ function drawChart(rawData, averagedData, graphID, title) {
       legend: { display: false },
       scales: {
         xAxes: [{ ticks: { min: 1, max: 24 } }],
-        yAxes: [{ ticks: { min: 20, max: 90 } }],
+        yAxes: [{ ticks: { min: minTime, max: maxTime } }],
       },
       title: {
         display: true,

@@ -64,7 +64,7 @@
       dataAvg: undefined,
       insightsArr: undefined,
       dataURI: {
-        lookBack: "https://storage.googleapis.com/location-logger-bucket/550forestparkblvdoxnardca93036usa-6510elcolegiordgoletaca93117usa/30day-lookback-10_2022.json"
+        lookBack: "https://storage.googleapis.com/location-logger-bucket/550forestparkblvdoxnardca93036usa-santabarbaraca93106usa/30day-lookback.json"
       }
     }
 
@@ -73,7 +73,7 @@
       dataAvg: undefined,
       insightsArr: undefined,
       dataURI: {
-        lookBack: "https://storage.googleapis.com/location-logger-bucket/6510elcolegiordgoletaca93117usa-550forestparkblvdoxnardca93036usa/30day-lookback-10_2022.json"
+        lookBack: "https://storage.googleapis.com/location-logger-bucket/santabarbaraca93106usa-550forestparkblvdoxnardca93036usa/30day-lookback.json"
       }
     }
 
@@ -87,20 +87,22 @@
       graphObj_OxnToGol.dataRaw = await async_getDataFromBucket(graphObj_OxnToGol.dataURI.lookBack);
       graphObj_OxnToGol.dataAvg = getAveragedSetFromData(graphObj_OxnToGol.dataRaw);
       createCanvasObject(document, "monthlyLookBack_OxnToGol", "lookBack_OxnToGol");
-      drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_OxnToGol", "Oxnard -> Goleta Scatter");
       let oxn_gol_insightObj = getInsights(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg);
       let oxn_gol_insight_ref = document.getElementById("oxn-gol-insight");
       renderInsightsToDOMRef(oxn_gol_insight_ref, oxn_gol_insightObj)
+      drawChart(graphObj_OxnToGol.dataRaw, graphObj_OxnToGol.dataAvg, "lookBack_OxnToGol", "Oxnard -> Goleta Scatter");
+
 
 
       // Draw Goleta -> Oxn
       graphObj_GolToOxn.dataRaw = await async_getDataFromBucket(graphObj_GolToOxn.dataURI.lookBack);
       graphObj_GolToOxn.dataAvg = getAveragedSetFromData(graphObj_GolToOxn.dataRaw);
       createCanvasObject(document, "monthlyLookBack_GoltoOxn", "lookBack_GolToOxn");
-      drawChart(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg, "lookBack_GolToOxn",  "Goleta -> Oxnard Scatter");
       let gol_oxn_insightObj = getInsights(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg);
       let gol_oxn_insight_ref = document.getElementById("gol-oxn-insight");
       renderInsightsToDOMRef(gol_oxn_insight_ref, gol_oxn_insightObj);
+      drawChart(graphObj_GolToOxn.dataRaw, graphObj_GolToOxn.dataAvg, "lookBack_GolToOxn",  "Goleta -> Oxnard Scatter");
+
     });
   </script>
 
