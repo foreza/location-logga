@@ -75,7 +75,7 @@ let uploadSegmentDataForType = async (dbObj, type, startAddr, endAddr) => {
       filename = `monthly-${tDate.getMonth()+1}_${tDate.getFullYear()}.json`
       break;
     case 2:
-      filename = `30day-lookback-${tDate.getMonth()+1}_${tDate.getFullYear()}.json`
+      filename = `30day-lookback.json`
       break;
     default:
       filename = "whatareyoudoing";
