@@ -69,10 +69,10 @@ let uploadSegmentDataForType = async (dbObj, type, startAddr, endAddr) => {
  
   switch (type) {
     case 0: 
-      filename = `daily-${tDate.getMonth()+1}_${tDate.getDate()}_${tDate.getFullYear()}.json`
+      filename = `${tDate.getFullYear()}/${tDate.getMonth()+1}/daily-${tDate.getMonth()+1}_${tDate.getDate()}_${tDate.getFullYear()}.json`
       break;
     case 1:
-      filename = `monthly-${tDate.getMonth()+1}_${tDate.getFullYear()}.json`
+      filename = `${tDate.getFullYear()}/${tDate.getMonth()+1}/fullMonth.json`
       break;
     case 2:
       filename = `30day-lookback.json`
