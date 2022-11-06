@@ -100,5 +100,24 @@ let get30DayLookBackForSegment = async (startLoc, endLoc) => {
 }
 
 
+let getRolling90DailyHourlyForSegment = async (startLoc, endLoc) => {
+  let rawQuery = `
+  SELECT 
+  (SUM(timetodestminutes)/COUNT(timetodestminutes)) as daily_hourly_avg,
+  extract(hour from currdatetime) as hour,
+  extract(DOW from currdatetime) as day_of_week
+  FROM location_data 
+  WHERE 
+  endaddr='${endLoc}' AND 
+  startaddr='${startLoc}' AND
+  currdatetime > (CURRENT_DATE - INTERVAL '90 days')
+  GROUP BY day_of_week, hour
+  `
+  console.log(rawQuery);
+  let result = await pool.query(rawQuery);
+  return result.rows;
+}
 
-module.exports = {initDB, insertLocationDataRowIntoDB, getTodayDataForSegment, getMonthDataForSegment, get30DayLookBackForSegment, cleanUp};
+
+
+module.exports = {initDB, insertLocationDataRowIntoDB, getTodayDataForSegment, getMonthDataForSegment, get30DayLookBackForSegment, getRolling90DailyHourlyForSegment, cleanUp};
