@@ -34,7 +34,7 @@ let renderLookBackSegment = async (documentRef, graphDOMRef, insightDOMRef, data
 
   renderInsightsToDOMRef(insightRef, insightObj)
   
-  drawChart(dataObj.dataRaw, dataObj.dataAvg, `lookBack_${firstLoc}To${secondLoc}`,
+  drawLookBackScatterChart(dataObj.dataRaw, dataObj.dataAvg, `lookBack_${firstLoc}To${secondLoc}`,
     `${locationA} -> ${locationB} Scatter`,
     30, insightObj["trip-peak-time-val"].value + 10); // TODO: Use the min value instead of hardcoded 30
 }
