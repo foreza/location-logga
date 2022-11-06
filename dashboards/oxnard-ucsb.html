@@ -27,8 +27,18 @@
     window.addEventListener('DOMContentLoaded', async (event) => {
       console.log('DOM fully loaded and parsed');
 
+      // Inject portions of the template
+
+      injectSegmentHeader(document, "loc-a-name", "loc-b-name");
+      injectSegmentTemplateForParams(document, "a-b-insight-dynamic", "monthlyLookBack_AToB")
+
+      injectSegmentHeader(document, "loc-b-name", "loc-a-name");
+      injectSegmentTemplateForParams(document, "b-a-insight-dynamic", "monthlyLookBack_BToA")
+
       await renderLookBackData(document, locationA, locationB, 
         lookBack_dataURI_AtoB, lookBack_dataURI_BtoA);
+
+      
     });
 
   </script>
@@ -37,7 +47,7 @@
 
   <!-- Do not touch this section! -->
   <body>
-    <main>
+    <main class="container">
       <!-- Content will be injected here -->
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>

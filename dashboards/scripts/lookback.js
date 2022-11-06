@@ -37,7 +37,7 @@ let renderLookBackSegment = async (documentRef, graphDOMRef, insightDOMRef, data
   let calculatedCeil = insightObj["trip-avg-time-val"].value + 
     Math.ceil((insightObj["trip-peak-time-val"].value - insightObj["trip-avg-time-val"].value)/2)
 
-  drawChart(dataObj.dataRaw, dataObj.dataAvg, `lookBack_${firstLoc}To${secondLoc}`,
+  drawLookBackChart(dataObj.dataRaw, dataObj.dataAvg, `lookBack_${firstLoc}To${secondLoc}`,
     `${locationA} -> ${locationB} Scatter`,
     insightObj["trip-lowest-time-val"].value-5, calculatedCeil+5);
 }

@@ -19,7 +19,7 @@ function createCanvasObject(docRef, parentRefName, graphID) {
 }
 
 
-function drawChart(rawData, averagedData, graphID, title, minTime=20, maxTime=90) {
+function drawLookBackChart(rawData, averagedData, graphID, title, minTime=20, maxTime=90) {
 
   // Scatter plot data for the raw untouched data
   var chartDataArrRaw = rawData.map(function (entry) {
