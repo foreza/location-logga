@@ -48,7 +48,7 @@ function drawChart(rawData, averagedData, graphID, title, minTime=20, maxTime=90
         pointBackgroundColor: "rgb(127,255,0)",
         data: chartDataArrAvg,
       },{
-        pointRadius: 2,
+        pointRadius: 1,
         pointBackgroundColor: "rgb(0,0,255)",
         data: chartDataArrRaw
       }

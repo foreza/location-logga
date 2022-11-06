@@ -18,6 +18,7 @@ segmentLb.innerHTML =
       </div>
     </div>
   </div>
+  <div class="divider"></div>
   <div class="row">
     <h2><span class="loc-b-name"></span> to <span class="loc-a-name"></span></h2>
     <div class="col m6 s12 section">
