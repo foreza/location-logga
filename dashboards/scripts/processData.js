@@ -3,9 +3,9 @@
 // Returns the hour and the averaged trip time for that hour
 let getAveragedSetFromData = (data) => {
 
-  var tMap = {};
+  let tMap = {};
 
-  for (var i = 0; i < data.length; ++i) {
+  for (let i = 0; i < data.length; ++i) {
     if (tMap[data[i].hour] == undefined) {
       tMap[data[i].hour] = [data[i].timetodestminutes]
     } else {
@@ -13,13 +13,13 @@ let getAveragedSetFromData = (data) => {
     }
   }
 
-  var retDataSet = [];
+  let retDataSet = [];
 
-  var tKeys = Object.keys(tMap);
+  let tKeys = Object.keys(tMap);
 
-  for (var i = 0; i < tKeys.length; ++i) {
+  for (let i = 0; i < tKeys.length; ++i) {
 
-    var tAvg = tMap[tKeys[i]].reduce((a, b) => a + b) / tMap[tKeys[i]].length;
+    let tAvg = tMap[tKeys[i]].reduce((a, b) => a + b) / tMap[tKeys[i]].length;
     retDataSet.push({
       "timetodestminutes": tAvg,
       "hour": tKeys[i]
@@ -37,6 +37,11 @@ let getInsights = (rawData, averagedData) => {
     "trip-peak-time-val": {
       "value": undefined,
       "friendlyName": "Peak overall trip time",
+      "suffix": "minutes"
+    },           // Uses the rawData
+    "trip-lowest-time-val": {
+      "value": undefined,
+      "friendlyName": "Lowest overall trip time",
       "suffix": "minutes"
     },           // Uses the rawData
     "trip-avg-time-val": {
@@ -66,9 +71,10 @@ let getInsights = (rawData, averagedData) => {
   let insightsData = rawData.map(({ hour, timetodestminutes }) =>
     ({ hour: adjustTimeForUTC(parseInt(hour)), timetodestminutes: timetodestminutes }))
 
-  // Calculate peak time
+  // Calculate peak and min times
   insightsData.sort((a, b) => b.timetodestminutes - a.timetodestminutes);
   insightsObj["trip-peak-time-val"].value = insightsData[0].timetodestminutes;
+  insightsObj["trip-lowest-time-val"].value = insightsData[insightsData.length - 1].timetodestminutes;
 
   // Calculate average time
   let tSum = insightsData.reduce((a, b) => a + b.timetodestminutes, 0);
@@ -80,20 +86,17 @@ let getInsights = (rawData, averagedData) => {
 
   // Calculate worst times to leave
   insightsAvgData.sort((a, b) => b.timetodestminutes - a.timetodestminutes);
-  // insightsObj["worst-times-to-leave"].value = [insightsAvgData[0].hour, insightsAvgData[1].hour, insightsAvgData[2].hour]
   insightsObj["worst-times-to-leave"].value = [insightsAvgData[0], insightsAvgData[1], insightsAvgData[2]]
-
 
   // Calculate best times to leave, AM
   let morningData = insightsAvgData.filter((a) => a.hour < 12 && a.hour >= 6)
   morningData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);
   insightsObj["best-times-to-leave-am"].value = [morningData[0], morningData[1], morningData[2]];
 
+    // Calculate best times to leave, PM
   let afternoonData = insightsAvgData.filter((a) => a.hour >= 12 && a.hour <= 18)
   afternoonData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);
   insightsObj["best-times-to-leave-pm"].value = [afternoonData[0], afternoonData[1], afternoonData[2]];
-
-  // console.log(insightsObj);
 
   return insightsObj;
 }

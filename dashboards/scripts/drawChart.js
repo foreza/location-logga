@@ -36,20 +36,23 @@ function drawChart(rawData, averagedData, graphID, title, minTime=20, maxTime=90
     tObj.x = adjustTimeForUTC(parseInt(entry.hour));
     tObj.y = parseInt(entry.timetodestminutes);
     return tObj;
-  })
+  }).sort((a,b) => a.x - b.x);
 
   new Chart(graphID, {
     type: "scatter",
     data: {
-      datasets: [{
+      datasets: [
+      {
+        type: "line",
+        pointRadius: 4,
+        pointBackgroundColor: "rgb(127,255,0)",
+        data: chartDataArrAvg,
+      },{
         pointRadius: 2,
         pointBackgroundColor: "rgb(0,0,255)",
         data: chartDataArrRaw
-      },{
-        pointRadius: 4,
-        pointBackgroundColor: "rgb(127,255,0)",
-        data: chartDataArrAvg
       }
+
     ]
     },
     options: {
@@ -61,7 +64,8 @@ function drawChart(rawData, averagedData, graphID, title, minTime=20, maxTime=90
       title: {
         display: true,
         text: title
-      }
+      },
+      
     }
   });
 
