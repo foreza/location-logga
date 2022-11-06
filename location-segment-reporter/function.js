@@ -33,27 +33,32 @@ exports.main = async (req, res) => {
   // The map API gives us the key to look up in the DB
 
   /*
-    0 = daily
-    1 = monthly
+    0 = daily - Not really used. Plan to deprecate
+    1 = monthly - Not really used. Plan to deprecate
     2 = 30 day lookback
+    3 = 90 day rolling, sorted by day of week and hour
   */
 
   let dailyDataObj = await fetchSegmentDataForType(mapRetObj, 0, mapRetObj.startAddr, mapRetObj.endAddr);
   let monthlyDataObj = await fetchSegmentDataForType(mapRetObj, 1, mapRetObj.startAddr, mapRetObj.endAddr);
   let lookBackDataObj = await fetchSegmentDataForType(mapRetObj, 2, mapRetObj.startAddr, mapRetObj.endAddr);
+  let hourlyDowAvgDataObj = await fetchSegmentDataForType(mapRetObj, 3, mapRetObj.startAddr, mapRetObj.endAddr);
+
 
 
   // Upload our files with the corresponding data
   let dailyFileURI = await uploadSegmentDataForType(dailyDataObj, 0, mapRetObj.startAddr, mapRetObj.endAddr);
   let monthlyFileURI = await uploadSegmentDataForType(monthlyDataObj, 1, mapRetObj.startAddr, mapRetObj.endAddr);
   let lookBackFileURI = await uploadSegmentDataForType(lookBackDataObj, 2, mapRetObj.startAddr, mapRetObj.endAddr);
+  let hourlyDowAvgFileURI = await uploadSegmentDataForType(hourlyDowAvgDataObj, 3, mapRetObj.startAddr, mapRetObj.endAddr);
 
 
   // grab the URI
   let retObj = {
     "dailyFileURI": dailyFileURI,
     "monthlyFileURI": monthlyFileURI,
-    "lookBackFileURI": lookBackFileURI
+    "lookBackFileURI": lookBackFileURI,
+    "hourlyDowAvgFileURI": hourlyDowAvgFileURI
   }
 
   // Tell GCP everything will be ok in the end.
@@ -76,6 +81,9 @@ let uploadSegmentDataForType = async (dbObj, type, startAddr, endAddr) => {
       break;
     case 2:
       filename = `30day-lookback.json`
+      break;
+    case 3:
+      filename = `90day-rolling-hourly-dow-avg.json`
       break;
     default:
       filename = "whatareyoudoing";
@@ -112,6 +120,9 @@ let fetchSegmentDataForType = async (mapObj, type, startAddr, endAddr) => {
         break;
       case 2:
         dbResultObj = await myDb.get30DayLookBackForSegment(startAddr, endAddr);
+        break;
+      case 3:
+        dbResultObj = await myDb.getRolling90DailyHourlyForSegment(startAddr, endAddr);
         break;
       default:
         // :(

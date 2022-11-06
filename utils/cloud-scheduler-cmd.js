@@ -45,3 +45,6 @@ let printJobCmdForExcution = (cmdArr) => {
 //   generateJobCommandsForSegment("la-coffee", "550forestparkblvd", "koreatownlosangeles"));
 // printJobCmdForExcution(
 //   generateJobCommandsForSegment("le-jpn-food", "550forestparkblvd", "sawtellelosangeles"))
+
+printJobCmdForExcution(
+  generateJobCommandsForSegment("visitOC", "2238scholarshipirvineca", "550forestparkblvd"))
