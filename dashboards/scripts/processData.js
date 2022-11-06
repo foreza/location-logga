@@ -16,7 +16,6 @@ let getAveragedSetFromData = (data) => {
   var retDataSet = [];
 
   var tKeys = Object.keys(tMap);
-  console.log(tKeys);
 
   for (var i = 0; i < tKeys.length; ++i) {
 
@@ -94,7 +93,7 @@ let getInsights = (rawData, averagedData) => {
   afternoonData.sort((a, b) => a.timetodestminutes - b.timetodestminutes);
   insightsObj["best-times-to-leave-pm"].value = [afternoonData[0], afternoonData[1], afternoonData[2]];
 
-  console.log(insightsObj);
+  // console.log(insightsObj);
 
   return insightsObj;
 }

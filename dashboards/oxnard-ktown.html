@@ -14,11 +14,10 @@
       ONLY UPDATE THIS SECTION
     */
     const locationA = "Oxnard";
-    const locationB = "UCSB";
-
+    const locationB = "K-Town (LA)";
     const bucketPartA = "550forestparkblvdoxnardca93036usa";
-    const bucketPartB = "santabarbaraca93106usa";
-    
+    const bucketPartB = "koreatownlosangelescausa";
+
     // Check to make sure the data source is valid!
     const lookBack_dataURI_AtoB = `https://storage.googleapis.com/location-logger-bucket/${bucketPartA}-${bucketPartB}/30day-lookback.json`;
     const lookBack_dataURI_BtoA = `https://storage.googleapis.com/location-logger-bucket/${bucketPartB}-${bucketPartA}/30day-lookback.json`;
@@ -27,7 +26,7 @@
     window.addEventListener('DOMContentLoaded', async (event) => {
       console.log('DOM fully loaded and parsed');
 
-      await renderLookBackData(document, locationA, locationB, 
+      await renderLookBackData(document, locationA, locationB,
         lookBack_dataURI_AtoB, lookBack_dataURI_BtoA);
     });
 
@@ -35,25 +34,26 @@
 
 </head>
 
-  <!-- Do not touch this section! -->
-  <body>
-    <main>
-      <!-- Content will be injected here -->
-    </main>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<!-- Do not touch this section! -->
+
+<body>
+  <main>
+    <!-- Content will be injected here -->
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+  <script src="./scripts/utils.js"></script>
+  <script src="./scripts/footer.js"></script>
+
+  <!-- Core chart drawing/data processing stuff -->
+  <script src="./scripts/drawChart.js"></script>
+  <script src="./scripts/processData.js"></script>
   
-    <script src="./scripts/utils.js"></script>
-    <script src="./scripts/footer.js"></script>
-  
-    <!-- Core chart drawing/data processing stuff -->
-    <script src="./scripts/drawChart.js"></script>
-    <script src="./scripts/processData.js"></script>
-    
-    <!-- Provides rendering / calculation specific to 30 day lookback -->
-    <script src="./scripts/bodySegmentLookback.js"></script>
-    <script src="./scripts/lookback.js"></script>
-  
-  </body>
+  <!-- Provides rendering / calculation specific to 30 day lookback -->
+  <script src="./scripts/bodySegmentLookback.js"></script>
+  <script src="./scripts/lookback.js"></script>
+
+</body>
 
 </html>

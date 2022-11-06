@@ -4,112 +4,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Location Logga - Oxnard to Sawtelle</title>
+  <title>Location Logga</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-</head>
 
-<body>
-  <main>
-
-    <div class="container">
-      <h1>Oxnard to Sawtelle</h1>
-      <div class="section">
-        <h2>Data Insights for last 30 days</h2>
-        <div id="oxn-saw-insight">
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="section">
-        <h2>Trip Data for last 30 Days (scatter)</h2>
-        <div id="monthlyLookBack_OxnToSaw" class="section">
-        </div>
-      </div>
-
-    </div>
-
-    <div class="container">
-      <h1>Sawtelle to Oxnard</h1>
-
-      <div class="section">
-        <h2>Data Insights for last 30 days</h2>
-        <div id="saw-oxn-insight">
-        </div>
-      </div>
-
-      <div class="divider"></div>
-      <div class="section">
-        <h2>Trip Data for last 30 Days (scatter)</h2>
-        <div id="monthlyLookBack_SawtoOxn" class="section">
-        </div>
-      </div>
-
-    
-    </div>
-
-  </main>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-  <script src="./scripts/utils.js"></script>
-  <script src="./scripts/drawChart.js"></script>
-  <script src="./scripts/processData.js"></script>
-  <script src="./scripts/footer.js"></script>
-
-  
-  <!-- Handle graph for 30daylb for OxnardToGoleta -->
+  <!-- Configuration for dashboard - edit here -->
   <script>
 
-    // Each page section  has a different URI that needs to be plugged in   
-    let graphObj_OxnToSaw = {
-      dataRaw: undefined, 
-      dataAvg: undefined,
-      insightsArr: undefined,
-      dataURI: {
-        lookBack: "https://storage.googleapis.com/location-logger-bucket/550forestparkblvdoxnardca93036usa-sawtellelosangelescausa/30day-lookback.json"
-      }
-    }
+    /*
+      ONLY UPDATE THIS SECTION
+    */
+    const locationA = "Oxnard";
+    const locationB = "Sawtelle";
+    const bucketPartA = "550forestparkblvdoxnardca93036usa";
+    const bucketPartB = "sawtellelosangelescausa";
 
-    let graphObj_SawToOxn = {
-      dataRaw: undefined, 
-      dataAvg: undefined,
-      insightsArr: undefined,
-      dataURI: {
-        lookBack: "https://storage.googleapis.com/location-logger-bucket/sawtellelosangelescausa-550forestparkblvdoxnardca93036usa/30day-lookback.json"
-      }
-    }
+    // Check to make sure the data source is valid!
+    const lookBack_dataURI_AtoB = `https://storage.googleapis.com/location-logger-bucket/${bucketPartA}-${bucketPartB}/30day-lookback.json`;
+    const lookBack_dataURI_BtoA = `https://storage.googleapis.com/location-logger-bucket/${bucketPartB}-${bucketPartA}/30day-lookback.json`;
 
-
-    // TODO: plug in
-
+    // Attempt to render once the DOM is loaded.
     window.addEventListener('DOMContentLoaded', async (event) => {
       console.log('DOM fully loaded and parsed');
 
-      // Draw Oxn -> Sawtelle
-      graphObj_OxnToSaw.dataRaw = await async_getDataFromBucket(graphObj_OxnToSaw.dataURI.lookBack);
-      graphObj_OxnToSaw.dataAvg = getAveragedSetFromData(graphObj_OxnToSaw.dataRaw);
-      createCanvasObject(document, "monthlyLookBack_OxnToSaw", "lookBack_OxnToSaw");
-      
-      let oxn_saw_insightObj = getInsights(graphObj_OxnToSaw.dataRaw, graphObj_OxnToSaw.dataAvg);
-      let oxn_saw_insight_ref = document.getElementById("oxn-saw-insight");
-
-      // Render after all calculations are done
-      renderInsightsToDOMRef(oxn_saw_insight_ref, oxn_saw_insightObj);
-      drawChart(graphObj_OxnToSaw.dataRaw, graphObj_OxnToSaw.dataAvg, "lookBack_OxnToSaw", "Oxnard -> Sawtelle Scatter", 40, oxn_saw_insightObj["trip-peak-time-val"].value+10);
-
-
-      // Draw Sawtelle -> Oxn
-      graphObj_SawToOxn.dataRaw = await async_getDataFromBucket(graphObj_SawToOxn.dataURI.lookBack);
-      graphObj_SawToOxn.dataAvg = getAveragedSetFromData(graphObj_SawToOxn.dataRaw);
-      createCanvasObject(document, "monthlyLookBack_SawtoOxn", "lookBack_SawToOxn");
-      let saw_oxn_insightObj = getInsights(graphObj_SawToOxn.dataRaw, graphObj_SawToOxn.dataAvg);
-      let saw_oxn_insight_ref = document.getElementById("saw-oxn-insight");
-
-      renderInsightsToDOMRef(saw_oxn_insight_ref, saw_oxn_insightObj);
-      drawChart(graphObj_SawToOxn.dataRaw, graphObj_SawToOxn.dataAvg, "lookBack_SawToOxn",  "Sawtelle -> Oxnard Scatter", 40, saw_oxn_insightObj["trip-peak-time-val"].value+10);
-
+      await renderLookBackData(document, locationA, locationB,
+        lookBack_dataURI_AtoB, lookBack_dataURI_BtoA);
     });
+
   </script>
 
+</head>
 
+<!-- Do not touch this section! -->
+
+<body>
+  <main>
+    <!-- Content will be injected here -->
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+  <script src="./scripts/utils.js"></script>
+  <script src="./scripts/footer.js"></script>
+
+  <!-- Core chart drawing/data processing stuff -->
+  <script src="./scripts/drawChart.js"></script>
+  <script src="./scripts/processData.js"></script>
+  
+  <!-- Provides rendering / calculation specific to 30 day lookback -->
+  <script src="./scripts/bodySegmentLookback.js"></script>
+  <script src="./scripts/lookback.js"></script>
 
 </body>
 

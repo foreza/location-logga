@@ -46,6 +46,11 @@ function get12HrSuffixedString(original24HrVal) {
 }
 
 
+let util_updateAllEleForClassNameToText = (documentRef, eleClassName, textValue) => {
+  let tArr = Array.from(documentRef.getElementsByClassName(eleClassName));
+  tArr.forEach(e => e.innerHTML = textValue);
+}
+
 // Tests
 // get12HrSuffixedString(-1);
 // get12HrSuffixedString(0);
