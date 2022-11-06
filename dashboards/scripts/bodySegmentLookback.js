@@ -23,8 +23,27 @@ let injectSegmentTemplateForParams = (docRef, insightId, lookbackId) => {
 }
 
 
+// TODO: Move this out?
 let injectSegmentHeader = (docRef, classAName, classBName) => {
   var tH = docRef.createElement("h2");
   tH.innerHTML = `<span class="${classAName}"></span> to <span class="${classBName}"></span>`
   docRef.getElementsByTagName("main")[0].append(tH);
+}
+
+
+let injectSegmentTemplateDowForParams = (docRef, dowId) => {
+
+  let tDowEle = docRef.createElement("div");
+  tDowEle.classList.add("segment-dow-avg");
+  tDowEle.innerHTML =
+  `
+  <div class="row">
+  <div class="col m12 s12 section">
+    <h3>Graph of Weekly Avg Times</h3>
+    <div class="chart-container" style="position: relative; height:80vh;" id="${dowId}">
+    </div>  
+  </div>
+  </div>`
+
+  docRef.getElementsByTagName("main")[0].append(tDowEle);
 }

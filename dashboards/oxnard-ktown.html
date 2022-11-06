@@ -22,14 +22,8 @@
     const lookBack_dataURI_AtoB = `https://storage.googleapis.com/location-logger-bucket/${bucketPartA}-${bucketPartB}/30day-lookback.json`;
     const lookBack_dataURI_BtoA = `https://storage.googleapis.com/location-logger-bucket/${bucketPartB}-${bucketPartA}/30day-lookback.json`;
 
-    // Attempt to render once the DOM is loaded.
-    window.addEventListener('DOMContentLoaded', async (event) => {
-      console.log('DOM fully loaded and parsed');
-
-      await renderLookBackData(document, locationA, locationB,
-        lookBack_dataURI_AtoB, lookBack_dataURI_BtoA);
-    });
-
+    const dowAvg_dataURI_AtoB = `https://storage.googleapis.com/location-logger-bucket/${bucketPartA}-${bucketPartB}/90day-rolling-hourly-dow-avg.json`;
+    const dowAvg_dataURI_BtoA = `https://storage.googleapis.com/location-logger-bucket/${bucketPartB}-${bucketPartA}/90day-rolling-hourly-dow-avg.json`;
   </script>
 
 </head>
@@ -37,7 +31,7 @@
 <!-- Do not touch this section! -->
 
 <body>
-  <main>
+  <main class="container">
     <!-- Content will be injected here -->
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -49,11 +43,24 @@
   <!-- Core chart drawing/data processing stuff -->
   <script src="./scripts/drawChart.js"></script>
   <script src="./scripts/processData.js"></script>
-  
+
   <!-- Provides rendering / calculation specific to 30 day lookback -->
   <script src="./scripts/bodySegmentLookback.js"></script>
   <script src="./scripts/lookback.js"></script>
 
-</body>
+  <!-- Main calling script -->
+  <script src="./scripts/main.js"></script>
 
+  <!-- Actual template load (relies on above constants) -->
+  <script>
+        // Attempt to render once the DOM is loaded.
+    window.addEventListener('DOMContentLoaded', async (event) => {
+      console.log('DOM fully loaded and parsed');
+
+      await renderTemplatePage(document, locationA, locationB,
+        lookBack_dataURI_AtoB, lookBack_dataURI_BtoA,
+        dowAvg_dataURI_AtoB, dowAvg_dataURI_BtoA);
+    });
+  </script>
+</body>
 </html>

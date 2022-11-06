@@ -1,9 +1,14 @@
 // Utility function to fetch
 let async_getDataFromBucket = async (dataURI) => {
-  const response = await fetch(dataURI);
-  const data = await response.json();
-  // console.log("monthlyData", data);
-  return data;
+  try {
+    const response = await fetch(dataURI);
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.error("Error fetching from bucket: ", e)
+    return undefined
+  }
+
 }
 
 // Utility function to help
@@ -50,6 +55,7 @@ let util_updateAllEleForClassNameToText = (documentRef, eleClassName, textValue)
   let tArr = Array.from(documentRef.getElementsByClassName(eleClassName));
   tArr.forEach(e => e.innerHTML = textValue);
 }
+
 
 // Tests
 // get12HrSuffixedString(-1);

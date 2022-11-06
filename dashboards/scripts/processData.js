@@ -29,7 +29,6 @@ let getAveragedSetFromData = (data) => {
 }
 
 
-
 // Add insights here, and calculate them within
 let getInsights = (rawData, averagedData) => {
 
@@ -145,4 +144,63 @@ let renderInsightsToDOMRef = (domRef, insightObj) => {
   
   
   domRef.appendChild(tInsightRenderObject);
+}
+
+
+
+
+let shiftDayOfWeekDataToPT = (data) => {
+
+  for (let e = 0; e < data.length; ++e) {
+
+    let adjustedHour = adjustTimeForUTC(data[e].hour);
+    // if the adjusted hour is greater than current hour
+    // this means we have to subtract one from the day of the week
+    if (adjustedHour > data[e].hour) {
+      let tDow = data[e].day_of_week - 1;
+      if (tDow == -1) {
+        tDow = 0
+      }
+      data[e].day_of_week = tDow;
+    }
+    data[e].hour = adjustedHour;
+  }
+
+  return data;
+}
+
+
+let transformAllObjectValuesToNumber = (data) => {
+
+  for (let i = 0; i < data.length; ++i) {
+
+    let tObjKeys = Object.keys(data[i]);
+    for (let y = 0; y < tObjKeys.length; ++y) {
+      data[i][tObjKeys[y]] = parseInt(data[i][tObjKeys[y]])
+    }
+  }
+
+  return data;
+
+}
+
+let getDowInsights = (data) => {
+
+  let insightsDowObj = {
+    "trip-peak-time-val": {
+      "value": undefined,
+      "friendlyName": "Peak overall trip time",
+      "suffix": "minutes"
+    },           // Uses the rawData
+    "trip-lowest-time-val": {
+      "value": undefined,
+      "friendlyName": "Lowest overall trip time",
+      "suffix": "minutes"
+    }
+  }
+
+  data.sort((a, b) => b.daily_hourly_avg - a.daily_hourly_avg);
+  insightsDowObj["trip-peak-time-val"].value = data[0].daily_hourly_avg;
+  insightsDowObj["trip-lowest-time-val"].value = data[data.length - 1].daily_hourly_avg;
+  return insightsDowObj;
 }
