@@ -159,7 +159,7 @@ let shiftDayOfWeekDataToPT = (data) => {
     if (adjustedHour > data[e].hour) {
       let tDow = data[e].day_of_week - 1;
       if (tDow == -1) {
-        tDow = 0
+        tDow = 6;
       }
       data[e].day_of_week = tDow;
     }
